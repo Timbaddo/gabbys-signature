@@ -1,0 +1,56 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isAdmin() {
+      return isSignedIn() &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.token.email));
+    }
+
+    // Public site content — anyone can read, only admins can write.
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /designs/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /posts/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Testimonials: anyone can submit one, only admins approve/remove.
+    // The public gallery page filters to approved == true on the client.
+    match /testimonials/{id} {
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if isAdmin();
+    }
+
+    // Appointments: anyone can create a request. Only the admin can read
+    // the full list (customers read their own via the "My Appointments"
+    // query, restricted to their own uid). Only admins update/delete.
+    match /appointments/{id} {
+      allow create: if true;
+      allow read: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    // Admin allow-list — add/remove admin emails from the Firebase console
+    // only (Firestore tab → admins collection). Never editable from the app.
+    match /admins/{email} {
+      allow read: if isSignedIn();
+      allow write: if false;
+    }
+
+    // Each signed-in customer owns their own profile/favorites doc.
+    match /users/{uid} {
+      allow read, write: if isSignedIn() && request.auth.uid == uid;
+    }
+  }
+}

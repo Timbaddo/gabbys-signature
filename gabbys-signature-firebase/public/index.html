@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Gabby's Signature — Fashion & Tailoring</title>
+<meta name="description" content="Gabby's Signature — custom women's and children's fashion design and tailoring in Nnewi, Anambra." />
+<link rel="icon" href="data:," />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<header id="site-header">
+  <div class="bar">
+    <button class="brand focus-ring" data-nav="home" aria-label="Gabby's Signature — home">
+      <span class="mark">G</span>
+      <span class="name">Gabby's Signature</span>
+    </button>
+    <div class="header-actions">
+      <div class="nav-desktop" id="nav-desktop"></div>
+      <button class="icon-btn focus-ring" data-nav="account" aria-label="My account">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none"><circle id="acct-dot" cx="12" cy="8" r="3.6" stroke="#1C1712" stroke-width="1.4" fill="none" /><path d="M4.5 19.2c1.6-3.4 4.6-5.1 7.5-5.1s5.9 1.7 7.5 5.1" stroke="#1C1712" stroke-width="1.4" stroke-linecap="round" /></svg>
+      </button>
+      <button class="icon-btn burger-btn focus-ring" id="burger-btn" aria-label="Open menu" aria-expanded="false">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="#1C1712" stroke-width="1.6" stroke-linecap="round" /></svg>
+      </button>
+    </div>
+  </div>
+  <nav id="mobile-menu" class="hidden"></nav>
+</header>
+
+<div id="back-bar" class="hidden">
+  <div class="wrap">
+    <button data-nav="home" aria-label="Back to Home">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M14.5 5l-7 7 7 7" stroke="#C9A24E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+      <span>Back to Home</span>
+    </button>
+    <span class="label" id="back-bar-label"></span>
+  </div>
+</div>
+
+<main id="page-root"></main>
+
+<footer id="site-footer"></footer>
+
+<button id="dev-fab" aria-label="Need a website?">💻 Need a Website?</button>
+<div id="dev-panel" class="hidden"></div>
+
+<div id="lightbox" class="hidden" role="dialog" aria-modal="true"></div>
+
+<div id="toast" role="status"></div>
+
+<!-- Firebase (compat build — no bundler required, works in Spck Editor) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+
+<script src="js/firebase-init.js"></script>
+<script src="js/data.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
