@@ -60,7 +60,7 @@ function socialIconsHtml(size) {
 function renderChrome() {
   document.getElementById("nav-desktop").innerHTML = NAV_LINKS.map(([k, l]) => `<button data-nav="${k}" class="${currentPage === k ? "active" : ""}">${l}</button>`).join("");
   document.getElementById("mobile-menu").innerHTML = `<div class="wrap">
-    ${[...NAV_LINKS, ["account", "My Account"], ["contact", "Contact"],...(Data.isAdmin ? [["admin", "Admin Dashboard"]] : []), ["developer", "Need a Website?"]].map(([k, l]) => `<button class="link ${currentPage === k ? "active" : ""}" data-nav="${k}">${l}</button>`).join("")}
+    ${[...NAV_LINKS, ["account", "My Account"], ["contact", "Contact"], ["developer", "Need a Website?"]].map(([k, l]) => `<button class="link ${currentPage === k ? "active" : ""}" data-nav="${k}">${l}</button>`).join("")}
     <div id="mobile-social">${socialIconsHtml(20)}</div>
   </div>`;
   document.getElementById("acct-dot").setAttribute("fill", Auth.user ? "#C9A24E33" : "none");
