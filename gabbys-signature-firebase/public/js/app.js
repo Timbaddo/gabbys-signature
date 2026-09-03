@@ -478,8 +478,11 @@ function mediaFieldHtml(key, folder, label, accept, current) {
   return `<div class="field">
     <label>${label}</label>
     ${current ? (isVideo ? `<video src="${esc(current)}" style="width:100%;max-width:240px;border-radius:4px;margin-bottom:8px;" controls></video>` : `<img src="${esc(current)}" style="width:84px;height:84px;object-fit:cover;border-radius:6px;margin-bottom:8px;" />`) : ""}
-    <input type="file" accept="${accept}" data-media-upload="${key}:${folder}" />
-    <span style="font-size:11.5px;color:var(--muted-2);margin-top:4px;">${current ? "Pick a new file to replace it." : "Uploads straight to Firebase Storage."}</span>
+    <input type="text" name="${key}" value="${esc(current || "")}" placeholder="Paste a direct ${isVideo ? "video" : "image"} URL (e.g. from postimages.org)" />
+    <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+      <input type="file" accept="${accept}" data-media-upload="${key}:${folder}" style="flex:1;" />
+    </div>
+    <span style="font-size:11.5px;color:var(--muted-2);margin-top:4px;display:block;">Paste a URL above (works now), or use "Choose file" once Firebase Storage is on a paid plan.</span>
   </div>`;
 }
 
@@ -487,14 +490,14 @@ function renderSettingsAdmin() {
   const s = Data.settings;
   const fields = [["businessName", "Business name"], ["tagline", "Tagline"], ["whatsapp", "WhatsApp number (digits only, with country code)"], ["phone", "Phone"], ["email", "Email"], ["address", "Studio address"], ["mapLink", "Google Maps link"], ["hours", "Opening hours"], ["facebook", "Facebook URL"], ["instagram", "Instagram URL"], ["tiktok", "TikTok URL"], ["googleReviewLink", "Google Reviews link"]];
   return `
-  <div style="background:var(--tint);padding:20px;margin-bottom:24px;max-width:520px;">
-    <h4 class="serif" style="margin:0 0 4px;">Media</h4>
-    <p style="font-size:12.5px;color:var(--muted);margin:0 0 14px;">Logo, studio photo and workshop video — uploads apply immediately.</p>
-    ${mediaFieldHtml("logoUrl", "logos", "Business logo", "image/*", s.logoUrl)}
-    ${mediaFieldHtml("aboutPhotoUrl", "about", "Studio / designer photo", "image/*", s.aboutPhotoUrl)}
-    ${mediaFieldHtml("workshopVideoUrl", "workshop", "Workshop video", "video/*", s.workshopVideoUrl)}
-  </div>
   <form id="settings-form" style="max-width:520px;">
+    <div style="background:var(--tint);padding:20px;margin-bottom:24px;">
+      <h4 class="serif" style="margin:0 0 4px;">Media</h4>
+      <p style="font-size:12.5px;color:var(--muted);margin:0 0 14px;">Paste an image/video URL, then tap "Save settings" below to apply it.</p>
+      ${mediaFieldHtml("logoUrl", "logos", "Business logo", "image/*", s.logoUrl)}
+      ${mediaFieldHtml("aboutPhotoUrl", "about", "Studio / designer photo", "image/*", s.aboutPhotoUrl)}
+      ${mediaFieldHtml("workshopVideoUrl", "workshop", "Workshop video", "video/*", s.workshopVideoUrl)}
+    </div>
     ${fields.map(([k, l]) => `<div class="field"><label>${l}</label><input name="${k}" value="${esc(s[k] || "")}" /></div>`).join("")}
     <div class="field"><label>About text</label><textarea name="about" rows="4">${esc(s.about || "")}</textarea></div>
     <button class="btn btn-solid" type="submit">Save settings</button>
