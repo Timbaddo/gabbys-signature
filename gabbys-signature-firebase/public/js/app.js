@@ -4,7 +4,11 @@
    Spck Editor on mobile.
    ============================================================ */
 
-const DEV = { name: "HeisTimo Tech🤍", role: "Web Developer & Website Designer", whatsapp: "2349162539689", email: "timothydabere@gmail.com", bio: "I design & build websites that convert visitors to customers. Business sites • E-commerce • Landing Pages" };
+const DEV = { name: "HeisTimo Tech🤍", role: "Web Developer & Website Designer", whatsapp: "2349162539689", email: "timothydabere@gmail.com", bio: "I design & build websites that convert visitors to customers. Business sites • E-commerce • Landing Pages", photo: "https://i.postimg.cc/Wz1DMZdf/IMG-20260903-123506.jpg" };
+function devMarkHtml(sizePx) {
+  if (DEV.photo) return `<img src="${esc(DEV.photo)}" alt="${esc(DEV.name)} photo" style="width:${sizePx}px;height:${sizePx}px;border-radius:50%;object-fit:cover;" />`;
+  return `<div style="width:${sizePx}px;height:${sizePx}px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--terracotta));display:inline-flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:${Math.round(sizePx * 0.36)}px;color:var(--cream);">H</div>`;
+}
 
 const NAV_LINKS = [["home", "Home"], ["about", "About"], ["services", "Services"], ["gallery", "Gallery"], ["posts", "Posts"], ["appointment", "Book Appointment"]];
 const PAGE_LABELS = { about: "About", services: "Services", gallery: "Gallery", posts: "Posts", appointment: "Book Appointment", contact: "Contact", account: "My Account", admin: "Admin Dashboard", developer: "Developer" };
@@ -194,7 +198,7 @@ function renderHome() {
 function devPromoBlockHtml() {
   return `<section class="section dark"><div class="wrap">
     <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap;">
-      <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--terracotta));flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:20px;color:var(--cream);">H</div>
+      <div style="flex-shrink:0;">${devMarkHtml(56)}</div>
       <div style="flex:1;min-width:220px;"><div class="serif" style="font-size:18px;color:var(--cream);">${DEV.name}</div><div style="font-size:13px;color:var(--gold);margin-bottom:6px;">${DEV.role}</div><p style="font-size:13.5px;color:#F7EFDDaa;margin:0;line-height:1.5;">${DEV.bio}</p></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;"><a class="btn btn-whatsapp" href="${waLink(DEV.whatsapp, "Hello HeisTimo Tech, I'd like to talk about getting a website.")}" target="_blank" rel="noopener noreferrer">${waIcon}WhatsApp</a><a class="btn btn-outline" href="mailto:${DEV.email}">Email</a></div>
     </div>
@@ -514,7 +518,7 @@ function renderSettingsAdmin() {
 function renderDeveloper() {
   return `<section class="section dark"><div class="wrap">${sectionHeading({ eyebrow: "Site developer", title: "Need a website like this?", sub: "This site was designed and built by HeisTimo Tech🤍." })}</div></section>
   <section class="section"><div class="wrap"><div style="max-width:480px;text-align:center;margin:0 auto;">
-    <div style="width:84px;height:84px;border-radius:50%;margin:0 auto 18px;background:linear-gradient(135deg,var(--gold),var(--terracotta));display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:30px;color:var(--cream);">H</div>
+    <div style="margin:0 auto 18px;">${devMarkHtml(84)}</div>
     <h3 class="serif" style="font-size:22px;margin:0 0 4px;">${DEV.name}</h3>
     <div style="font-size:13.5px;color:var(--terracotta);margin-bottom:14px;">${DEV.role}</div>
     <p style="font-size:14.5px;line-height:1.6;color:var(--ink);margin-bottom:26px;">${DEV.bio}</p>
