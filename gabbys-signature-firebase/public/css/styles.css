@@ -75,7 +75,8 @@ img{max-width:100%;display:block;}
 #site-header{position:sticky;top:0;z-index:200;background:#F7EFDDf2;backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
 #site-header .bar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;max-width:1160px;margin:0 auto;}
 .brand{display:flex;align-items:center;gap:10px;background:none;border:none;cursor:pointer;padding:0;}
-.brand .mark{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--terracotta),var(--gold));display:flex;align-items:center;justify-content:center;color:var(--cream);font-family:'Fraunces',serif;font-size:16px;}
+.brand .mark{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--terracotta),var(--gold));display:flex;align-items:center;justify-content:center;color:var(--cream);font-family:'Fraunces',serif;font-size:16px;overflow:hidden;}
+.mark-img{width:100%;height:100%;}
 .brand .name{font-family:'Fraunces',serif;font-size:19px;letter-spacing:.2px;}
 .header-actions{display:flex;align-items:center;gap:14px;}
 .nav-desktop{display:none;gap:22px;align-items:center;}
@@ -186,7 +187,7 @@ form{display:flex;flex-direction:column;}
 /* ---------- footer ---------- */
 #site-footer{background:#140F0C;color:#F7EFDDcc;padding:44px 18px 100px;}
 #site-footer .top{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
-#site-footer .top .mark{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--terracotta),var(--gold));display:flex;align-items:center;justify-content:center;color:var(--cream);font-family:'Fraunces',serif;}
+#site-footer .top .mark{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--terracotta),var(--gold));display:flex;align-items:center;justify-content:center;color:var(--cream);font-family:'Fraunces',serif;overflow:hidden;}
 #site-footer .top .name{font-family:'Fraunces',serif;font-size:18px;color:var(--cream);}
 #site-footer .about{font-size:13.5px;line-height:1.6;max-width:420px;margin-bottom:22px;}
 #site-footer .cols{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:20px;margin-bottom:26px;}

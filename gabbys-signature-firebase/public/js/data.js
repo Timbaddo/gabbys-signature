@@ -27,6 +27,9 @@ const DEFAULT_SETTINGS = {
   instagram: "https://www.instagram.com/jacyann_gabby",
   tiktok: "https://www.tiktok.com/@jacyann3",
   googleReviewLink: "https://maps.app.goo.gl/EK4SAf6y3fsvbyPM8",
+  logoUrl: "",
+  aboutPhotoUrl: "",
+  workshopVideoUrl: "",
 };
 
 const DEFAULT_CATEGORIES = ["Gowns", "Bridal Wear", "Aso-Ebi", "Native Wear", "Children's Wear", "Corporate Wear", "Custom Restyle"];
@@ -60,6 +63,17 @@ const SEED_TESTIMONIALS = [
   { name: "Uzoamaka O.", text: "My aso-ebi fit better than anything I've ever owned. Every seam sat exactly where it should.", approved: true },
   { name: "Blessing N.", text: "Gabby designed my wedding dress from a single reference photo and somehow made it even better.", approved: true },
 ];
+
+// Uploads a file (image or video) picked from the phone to Firebase
+// Storage and returns its public download URL. Only succeeds for signed-in
+// admins — storage.rules enforces that server-side.
+async function uploadToStorage(file, folder) {
+  const safeName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, "_");
+  const path = `${folder}/${Date.now()}_${safeName}`;
+  const ref = storage.ref().child(path);
+  await ref.put(file);
+  return ref.getDownloadURL();
+}
 
 const Data = {
   settings: { ...DEFAULT_SETTINGS },

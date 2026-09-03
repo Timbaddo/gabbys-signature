@@ -57,13 +57,20 @@ function socialIconsHtml(size) {
 }
 
 /* ---------- header / nav / footer ---------- */
+function logoMarkHtml(sizeClass) {
+  const s = Data.settings;
+  if (s.logoUrl) return `<img src="${esc(s.logoUrl)}" alt="${esc(s.businessName)} logo" class="${sizeClass}" style="border-radius:50%;object-fit:cover;" />`;
+  return `G`;
+}
+
 function renderChrome() {
   document.getElementById("nav-desktop").innerHTML = NAV_LINKS.map(([k, l]) => `<button data-nav="${k}" class="${currentPage === k ? "active" : ""}">${l}</button>`).join("");
   document.getElementById("mobile-menu").innerHTML = `<div class="wrap">
-    ${[...NAV_LINKS, ["account", "My Account"], ["contact", "Contact"], ["developer", "Need a Website?"]].map(([k, l]) => `<button class="link ${currentPage === k ? "active" : ""}" data-nav="${k}">${l}</button>`).join("")}
+    ${[...NAV_LINKS, ["account", "My Account"], ["contact", "Contact"], ...(Data.isAdmin ? [["admin", "Admin Dashboard"]] : []), ["developer", "Need a Website?"]].map(([k, l]) => `<button class="link ${currentPage === k ? "active" : ""}" data-nav="${k}">${l}</button>`).join("")}
     <div id="mobile-social">${socialIconsHtml(20)}</div>
   </div>`;
   document.getElementById("acct-dot").setAttribute("fill", Auth.user ? "#C9A24E33" : "none");
+  document.getElementById("brand-mark").innerHTML = logoMarkHtml("mark-img");
 
   const bar = document.getElementById("back-bar");
   if (currentPage === "home") { bar.classList.add("hidden"); }
@@ -71,7 +78,7 @@ function renderChrome() {
 
   const s = Data.settings;
   document.getElementById("site-footer").innerHTML = `<div class="wrap">
-    <div class="top"><span class="mark">G</span><span class="name">${esc(s.businessName)}</span></div>
+    <div class="top"><span class="mark">${logoMarkHtml("mark-img")}</span><span class="name">${esc(s.businessName)}</span></div>
     <p class="about">${esc((s.about || "").slice(0, 140))}…</p>
     <div class="cols">
       <div class="col"><div class="col-title">Quick links</div>${["home", "about", "services", "gallery", "appointment"].map((p) => `<button data-nav="${p}">${p === "appointment" ? "Book Appointment" : p}</button>`).join("")}</div>
@@ -126,7 +133,7 @@ function renderHome() {
 
   <section class="section tint"><div class="wrap">
     <div class="about-grid">
-      ${tileHtml({ seed: 2, label: "Designer at work — add studio photo in Admin" })}
+      ${tileHtml({ seed: 2, image: s.aboutPhotoUrl, label: "Designer at work — add studio photo in Admin" })}
       <div>
         ${sectionHeading({ eyebrow: "Our story", title: "Built on craftsmanship, not shortcuts", sub: esc(s.about.slice(0, 220)) + "…" })}
         <button class="btn btn-ghost" data-nav="about">Learn more →</button>
@@ -142,9 +149,11 @@ function renderHome() {
 
   <section class="section dark"><div class="wrap">
     ${sectionHeading({ eyebrow: "Behind the scenes", title: "Inside the workshop", sub: "Every garment passes through measuring, pattern-making, cutting and hand-finishing before it reaches you." })}
-    <div style="border-radius:4px;overflow:hidden;background:#0000002e;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;border:1px solid #F7EFDD22;">
-      <div style="text-align:center;color:#F7EFDDaa;"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" style="margin:0 auto;"><circle cx="12" cy="12" r="10.5" stroke="#F7EFDF88" stroke-width="1.2"/><path d="M10 8.5l6 3.5-6 3.5v-7z" fill="#F7EFDF88"/></svg><div style="font-size:13px;margin-top:10px;">workshop.mp4 — add in Admin → Website Settings</div></div>
-    </div>
+    ${s.workshopVideoUrl
+      ? `<video src="${esc(s.workshopVideoUrl)}" controls preload="metadata" style="width:100%;border-radius:4px;background:#000;"></video>`
+      : `<div style="border-radius:4px;overflow:hidden;background:#0000002e;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;border:1px solid #F7EFDD22;">
+      <div style="text-align:center;color:#F7EFDDaa;"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" style="margin:0 auto;"><circle cx="12" cy="12" r="10.5" stroke="#F7EFDF88" stroke-width="1.2"/><path d="M10 8.5l6 3.5-6 3.5v-7z" fill="#F7EFDF88"/></svg><div style="font-size:13px;margin-top:10px;">Workshop video — add in Admin → Website Settings</div></div>
+    </div>`}
   </div></section>
 
   <section class="section"><div class="wrap">
@@ -197,7 +206,7 @@ function renderAbout() {
   const s = Data.settings;
   return `<section class="section dark"><div class="wrap">${sectionHeading({ eyebrow: "About us", title: esc(s.businessName) })}</div></section>
   <section class="section"><div class="wrap"><div class="about-grid">
-    ${tileHtml({ seed: 1, label: "Designer portrait — add in Admin" })}
+    ${tileHtml({ seed: 1, image: s.aboutPhotoUrl, label: "Designer portrait — add in Admin" })}
     <div>
       <p style="font-size:16px;line-height:1.75;color:var(--ink);">${esc(s.about)}</p>
       <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:26px;">
@@ -237,7 +246,7 @@ function renderPosts() {
   const posts = Data.posts.filter((p) => p.published).slice().reverse();
   return `<section class="section dark"><div class="wrap">${sectionHeading({ eyebrow: "Latest", title: "Posts & Announcements" })}</div></section>
   <section class="section"><div class="wrap">
-    ${posts.length ? `<div style="display:flex;flex-direction:column;gap:2px;background:var(--line);">${posts.map((p, i) => `<div style="background:var(--cream);padding:22px;display:grid;grid-template-columns:100px 1fr;gap:18px;align-items:start;">${tileHtml({ seed: i, label: "", flat: true })}<div><span style="font-size:12px;color:var(--gold);">${esc(p.date || "")}</span><h3 class="serif" style="font-size:19px;margin:4px 0 8px;">${esc(p.title)}</h3><p style="font-size:14px;line-height:1.55;color:var(--muted);margin:0;">${esc(p.description)}</p></div></div>`).join("")}</div>` : `<div class="empty-state">No announcements yet — check back soon.</div>`}
+    ${posts.length ? `<div style="display:flex;flex-direction:column;gap:2px;background:var(--line);">${posts.map((p, i) => `<div style="background:var(--cream);padding:22px;display:grid;grid-template-columns:100px 1fr;gap:18px;align-items:start;">${tileHtml({ seed: i, image: p.image, label: "", flat: true })}<div><span style="font-size:12px;color:var(--gold);">${esc(p.date || "")}</span><h3 class="serif" style="font-size:19px;margin:4px 0 8px;">${esc(p.title)}</h3><p style="font-size:14px;line-height:1.55;color:var(--muted);margin:0;">${esc(p.description)}</p></div></div>`).join("")}</div>` : `<div class="empty-state">No announcements yet — check back soon.</div>`}
   </div></section>`;
 }
 
@@ -406,7 +415,7 @@ function renderDesignsAdmin() {
       <div class="field"><input name="name" placeholder="Design name" required /></div>
       <div class="field"><select name="category">${Data.categories.map((c) => `<option>${esc(c)}</option>`).join("")}</select></div>
       <div class="field"><textarea name="description" placeholder="Description" rows="2"></textarea></div>
-      <div class="field"><input name="image" placeholder="Image URL (optional — leave blank for placeholder)" /></div>
+      <div class="field"><label>Photo</label><input type="file" accept="image/*" data-upload-into="design-image-url" data-upload-folder="designs" /><input type="text" id="design-image-url" name="image" placeholder="or paste an image URL" style="margin-top:8px;" /></div>
       <div style="display:flex;gap:16px;font-size:13.5px;margin-bottom:14px;"><label><input type="checkbox" name="featured" /> Featured</label><label><input type="checkbox" name="published" checked /> Published</label></div>
       <button class="btn btn-solid">Add design</button>
     </form>
@@ -429,6 +438,7 @@ function renderPostsAdmin() {
     <form id="post-form">
       <div class="field"><input name="title" placeholder="Title" required /></div>
       <div class="field"><textarea name="description" placeholder="Description" rows="2"></textarea></div>
+      <div class="field"><label>Photo (optional)</label><input type="file" accept="image/*" data-upload-into="post-image-url" data-upload-folder="posts" /><input type="text" id="post-image-url" name="image" placeholder="or paste an image URL" style="margin-top:8px;" /></div>
       <button class="btn btn-solid">Publish post</button>
     </form>
   </div>
@@ -463,10 +473,28 @@ function renderTestiAdmin() {
   </div>`;
 }
 
+function mediaFieldHtml(key, folder, label, accept, current) {
+  const isVideo = accept.indexOf("video") === 0;
+  return `<div class="field">
+    <label>${label}</label>
+    ${current ? (isVideo ? `<video src="${esc(current)}" style="width:100%;max-width:240px;border-radius:4px;margin-bottom:8px;" controls></video>` : `<img src="${esc(current)}" style="width:84px;height:84px;object-fit:cover;border-radius:6px;margin-bottom:8px;" />`) : ""}
+    <input type="file" accept="${accept}" data-media-upload="${key}:${folder}" />
+    <span style="font-size:11.5px;color:var(--muted-2);margin-top:4px;">${current ? "Pick a new file to replace it." : "Uploads straight to Firebase Storage."}</span>
+  </div>`;
+}
+
 function renderSettingsAdmin() {
   const s = Data.settings;
   const fields = [["businessName", "Business name"], ["tagline", "Tagline"], ["whatsapp", "WhatsApp number (digits only, with country code)"], ["phone", "Phone"], ["email", "Email"], ["address", "Studio address"], ["mapLink", "Google Maps link"], ["hours", "Opening hours"], ["facebook", "Facebook URL"], ["instagram", "Instagram URL"], ["tiktok", "TikTok URL"], ["googleReviewLink", "Google Reviews link"]];
-  return `<form id="settings-form" style="max-width:520px;">
+  return `
+  <div style="background:var(--tint);padding:20px;margin-bottom:24px;max-width:520px;">
+    <h4 class="serif" style="margin:0 0 4px;">Media</h4>
+    <p style="font-size:12.5px;color:var(--muted);margin:0 0 14px;">Logo, studio photo and workshop video — uploads apply immediately.</p>
+    ${mediaFieldHtml("logoUrl", "logos", "Business logo", "image/*", s.logoUrl)}
+    ${mediaFieldHtml("aboutPhotoUrl", "about", "Studio / designer photo", "image/*", s.aboutPhotoUrl)}
+    ${mediaFieldHtml("workshopVideoUrl", "workshop", "Workshop video", "video/*", s.workshopVideoUrl)}
+  </div>
+  <form id="settings-form" style="max-width:520px;">
     ${fields.map(([k, l]) => `<div class="field"><label>${l}</label><input name="${k}" value="${esc(s[k] || "")}" /></div>`).join("")}
     <div class="field"><label>About text</label><textarea name="about" rows="4">${esc(s.about || "")}</textarea></div>
     <button class="btn btn-solid" type="submit">Save settings</button>
@@ -544,6 +572,38 @@ async function renderPage() {
 function attachPageHandlers() {
   const form = (id) => document.getElementById(id);
 
+  // Settings → Media: upload immediately and save straight to settings.
+  document.querySelectorAll("[data-media-upload]").forEach((input) => {
+    input.addEventListener("change", async () => {
+      const file = input.files[0];
+      if (!file) return;
+      const [key, folder] = input.dataset.mediaUpload.split(":");
+      toast("Uploading…");
+      try {
+        const url = await uploadToStorage(file, folder);
+        await Data.saveSettings({ [key]: url });
+        toast("Uploaded");
+        renderPage();
+      } catch (err) { toast(err.message || "Upload failed"); }
+    });
+  });
+
+  // Design / Post forms: upload a photo and drop the URL into the paired text field.
+  document.querySelectorAll("[data-upload-into]").forEach((input) => {
+    input.addEventListener("change", async () => {
+      const file = input.files[0];
+      if (!file) return;
+      const targetId = input.dataset.uploadInto;
+      const folder = input.dataset.uploadFolder || "uploads";
+      toast("Uploading…");
+      try {
+        const url = await uploadToStorage(file, folder);
+        document.getElementById(targetId).value = url;
+        toast("Photo uploaded");
+      } catch (err) { toast(err.message || "Upload failed"); }
+    });
+  });
+
   const apptForm = form("appt-form");
   if (apptForm) apptForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -617,7 +677,7 @@ function attachPageHandlers() {
   if (postForm) postForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const fd = new FormData(postForm);
-    await Data.addPost({ title: fd.get("title"), description: fd.get("description"), published: true, date: new Date().toISOString().slice(0, 10) });
+    await Data.addPost({ title: fd.get("title"), description: fd.get("description"), image: fd.get("image") || "", published: true, date: new Date().toISOString().slice(0, 10) });
     toast("Post published");
     renderPage();
   });
