@@ -550,7 +550,10 @@ function renderLightbox() {
     <div class="lb-info">
       <div class="lb-info-top"><div><h3>${esc(d.name)}</h3><span class="cat">${esc(d.category)}</span></div><button class="lb-fav ${fav ? "active" : ""} focus-ring" data-fav="${d.id}" aria-label="Save design">${fav ? "♥" : "♡"}</button></div>
       <p>${esc(d.description)}</p>
-      <a class="btn btn-whatsapp full" href="${waLink(Data.settings.whatsapp, `Hello, I saw "${d.name}" on your website and I'm interested in making something similar. I'd like to discuss the design, fabric, customization and price.`)}" target="_blank" rel="noopener noreferrer">${waIcon}Discuss This Design on WhatsApp</a>
+      <div style="display:flex;gap:8px;">
+        <a class="btn btn-whatsapp full" style="flex:1;" href="${waLink(Data.settings.whatsapp, `Hello, I saw "${d.name}" on your website and I'm interested in making something similar. I'd like to discuss the design, fabric, customization and price.`)}" target="_blank" rel="noopener noreferrer">${waIcon}Discuss This Design on WhatsApp</a>
+        <button class="btn btn-outline focus-ring" id="lb-share-btn" aria-label="Copy link to this design">🔗 Share</button>
+      </div>
     </div>`;
 }
 
@@ -769,6 +772,18 @@ document.addEventListener("click", async (e) => {
   if (e.target.closest("#lb-close-btn") || e.target === document.getElementById("lightbox")) { closeLightbox(); return; }
   if (e.target.closest("#lb-prev-btn")) { lightboxGo(-1); return; }
   if (e.target.closest("#lb-next-btn")) { lightboxGo(1); return; }
+  const shareBtn = e.target.closest("#lb-share-btn");
+  if (shareBtn) {
+    const d = lightboxIds[lightboxIndex];
+    const url = `${location.origin}/#design=${d.id}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      toast("Link copied — paste it anywhere");
+    } catch (err) {
+      toast(url);
+    }
+    return;
+  }
 
   if (e.target.closest("#dev-fab")) { document.getElementById("dev-panel").classList.toggle("hidden"); return; }
 });
@@ -804,6 +819,15 @@ document.getElementById("dev-panel").innerHTML = `
     <a class="btn btn-outline" href="mailto:${DEV.email}">📧 Email Me</a>
   </div>`;
 
+function openDesignLinkIfPresent() {
+  const hash = (location.hash || "").replace("#", "");
+  if (hash.startsWith("design=")) {
+    const id = hash.slice("design=".length);
+    if (Data.designs.some((d) => d.id === id)) { openLightbox(id); return true; }
+  }
+  return false;
+}
+
 (async function boot() {
   try {
     await Data.init();
@@ -812,12 +836,14 @@ document.getElementById("dev-panel").innerHTML = `
     document.getElementById("page-root").innerHTML = `<div class="section"><div class="wrap"><div class="empty-state">Couldn't connect to Firebase. Check firebase-init.js and your project's Firestore rules.</div></div></div>`;
   }
   await Auth.init();
-  currentPage = (location.hash || "#home").replace("#", "") || "home";
-  if (!PAGE_RENDERERS[currentPage]) currentPage = "home";
+  const hash = (location.hash || "#home").replace("#", "");
+  currentPage = hash.startsWith("design=") ? "gallery" : (PAGE_RENDERERS[hash] ? hash : "home");
   await renderPage();
+  openDesignLinkIfPresent();
 })();
 
 window.addEventListener("hashchange", () => {
+  if (openDesignLinkIfPresent()) return;
   const page = (location.hash || "#home").replace("#", "") || "home";
   if (PAGE_RENDERERS[page] && page !== currentPage) { currentPage = page; renderPage(); window.scrollTo({ top: 0 }); }
 });
