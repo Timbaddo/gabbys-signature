@@ -64,6 +64,14 @@
 
 <div id="lightbox" class="hidden" role="dialog" aria-modal="true"></div>
 
+<div id="image-zoom" class="hidden" role="dialog" aria-modal="true">
+  <button id="zoom-close-btn" aria-label="Close full-screen image">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 5l14 14M19 5L5 19" stroke="#F7EFDD" stroke-width="1.8" stroke-linecap="round"/></svg>
+    <span>Close</span>
+  </button>
+  <img id="zoom-img" src="" alt="" />
+</div>
+
 <div id="toast" role="status"></div>
 
 <!-- Firebase (compat build — no bundler required, works in Spck Editor) -->
