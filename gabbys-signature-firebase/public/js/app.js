@@ -776,11 +776,16 @@ document.addEventListener("click", async (e) => {
   if (shareBtn) {
     const d = lightboxIds[lightboxIndex];
     const url = `${location.origin}/#design=${d.id}`;
-    try {
-      await navigator.clipboard.writeText(url);
-      toast("Link copied — paste it anywhere");
-    } catch (err) {
-      toast(url);
+    const shareData = { title: `${d.name} — ${Data.settings.businessName}`, text: `Check out "${d.name}" from ${Data.settings.businessName}`, url };
+    if (navigator.share) {
+      try { await navigator.share(shareData); } catch (err) { /* user cancelled — no error needed */ }
+    } else {
+      try {
+        await navigator.clipboard.writeText(url);
+        toast("Link copied — paste it into WhatsApp, Facebook, etc.");
+      } catch (err) {
+        window.prompt("Copy this link:", url);
+      }
     }
     return;
   }
