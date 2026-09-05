@@ -544,7 +544,7 @@ function renderLightbox() {
     <div class="lb-top"><span class="lb-count">${lightboxIndex + 1} / ${lightboxIds.length}</span><button class="lb-close focus-ring" id="lb-close-btn" aria-label="Close">×</button></div>
     <div class="lb-body">
       <button class="lb-nav lb-prev focus-ring" id="lb-prev-btn" aria-label="Previous design">‹</button>
-      <div class="lb-media">${tileHtml({ seed: lightboxIndex, image: d.image, label: d.image ? undefined : `Photo pending — ${d.name}` })}</div>
+      <div class="lb-media">${tileHtml({ seed: lightboxIndex, image: d.image, flat: true, label: d.image ? undefined : `Photo pending — ${d.name}` })}</div>
       <button class="lb-nav lb-next focus-ring" id="lb-next-btn" aria-label="Next design">›</button>
     </div>
     <div class="lb-info">
