@@ -550,9 +550,10 @@ function renderLightbox() {
     <div class="lb-info">
       <div class="lb-info-top"><div><h3>${esc(d.name)}</h3><span class="cat">${esc(d.category)}</span></div><button class="lb-fav ${fav ? "active" : ""} focus-ring" data-fav="${d.id}" aria-label="Save design">${fav ? "♥" : "♡"}</button></div>
       <p>${esc(d.description)}</p>
-      <div style="display:flex;gap:8px;">
-        <a class="btn btn-whatsapp full" style="flex:1;" href="${waLink(Data.settings.whatsapp, `Hello, I saw "${d.name}" on your website and I'm interested in making something similar. I'd like to discuss the design, fabric, customization and price.`)}" target="_blank" rel="noopener noreferrer">${waIcon}Discuss This Design on WhatsApp</a>
-        <button class="btn btn-outline focus-ring" id="lb-share-btn" aria-label="Copy link to this design">🔗 Share</button>
+      <a class="btn btn-whatsapp full" href="${waLink(Data.settings.whatsapp, `Hello, I saw "${d.name}" on your website and I'm interested in making something similar. I'd like to discuss the design, fabric, customization and price.`)}" target="_blank" rel="noopener noreferrer">${waIcon}Discuss This Design on WhatsApp</a>
+      <div style="display:flex;gap:8px;margin-top:8px;">
+        <a class="btn btn-outline" style="flex:1;" href="${waLink("", `Check out "${d.name}" from ${Data.settings.businessName}: ${location.origin}/#design=${d.id}`)}" target="_blank" rel="noopener noreferrer">📤 Share to WhatsApp</a>
+        <button class="btn btn-outline focus-ring" id="lb-copy-btn" style="flex:1;" aria-label="Copy link to this design">🔗 Copy Link</button>
       </div>
     </div>`;
 }
@@ -772,20 +773,15 @@ document.addEventListener("click", async (e) => {
   if (e.target.closest("#lb-close-btn") || e.target === document.getElementById("lightbox")) { closeLightbox(); return; }
   if (e.target.closest("#lb-prev-btn")) { lightboxGo(-1); return; }
   if (e.target.closest("#lb-next-btn")) { lightboxGo(1); return; }
-  const shareBtn = e.target.closest("#lb-share-btn");
-  if (shareBtn) {
+  const copyBtn = e.target.closest("#lb-copy-btn");
+  if (copyBtn) {
     const d = lightboxIds[lightboxIndex];
     const url = `${location.origin}/#design=${d.id}`;
-    const shareData = { title: `${d.name} — ${Data.settings.businessName}`, text: `Check out "${d.name}" from ${Data.settings.businessName}`, url };
-    if (navigator.share) {
-      try { await navigator.share(shareData); } catch (err) { /* user cancelled — no error needed */ }
-    } else {
-      try {
-        await navigator.clipboard.writeText(url);
-        toast("Link copied — paste it into WhatsApp, Facebook, etc.");
-      } catch (err) {
-        window.prompt("Copy this link:", url);
-      }
+    try {
+      await navigator.clipboard.writeText(url);
+      toast("Link copied — paste it into Facebook, Instagram, etc.");
+    } catch (err) {
+      window.prompt("Copy this link:", url);
     }
     return;
   }
